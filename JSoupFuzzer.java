@@ -8,7 +8,7 @@ import com.code_intelligence.jazzer.api.FuzzedDataProvider;
 
 public class JSoupFuzzer {
   public static void fuzzerTestOneInput(FuzzedDataProvider data) {
-    //try {
+    //try1 {
       Jsoup.parse(data.consumeRemainingAsString());
     //} catch (IllegalArgumentException ignored) {
     //}
