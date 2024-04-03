@@ -40,30 +40,24 @@ def get_project_id():
 
 def initiate_analysis():
     global analysis_id
-    response = requests.post(f'{api_url}/users/self/task/',
+    response = requests.post(f'{api_url}/users/self/git/',
         headers=headers,
         data={
             'project': project_id,
             'commit': commit
         })
-    if response.status_code != 201:
-        print(f"Server responded with status code {response.status_code}")
-        print(response.content)
-        exit(1)
     analysis_id = response.json()['analysis']
 
 def start_polling():
     while True:
-        print(analysis_id)
         response = requests.get(f'{api_url}/users/self/analyses/{analysis_id}', headers=headers)
         data = response.json()
-        print(data)
-        # if data['total_crashes'] > 0:
-        #     response = requests.get(f'{api_url}/analyses/{analysis_id}/crashes', headers=headers)
-        #     for crash in response.json():
-        #         print(crash['stackTrace'])
-        #         print('Found crashes visit https://fuzzer.cydarien.com to download crashes.')
-        #         exit(1)
+        if data['total_crashes'] > 0:
+            response = requests.get(f'{api_url}/analyses/{analysis_id}/crashes', headers=headers)
+            for crash in response.json():
+                print(crash['stackTrace'])
+                print('Found crashes visit https://fuzzer.cydarien.com to download crashes.')
+                exit(1)
         if data['status'] == 'T':
             exit(0)
         time.sleep(30)
